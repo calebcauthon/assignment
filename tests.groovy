@@ -120,7 +120,7 @@ class JUnit4ExampleTests {
     }
 
     @Test
-    void test__twoProducts__lowerCategoryRangeInclusive() {
+    void test__twoProducts__categoryFloorInclusive() {
       products = [
         ["prod-1", "the-group", 10],
       ];
@@ -133,6 +133,29 @@ class JUnit4ExampleTests {
 
       def expectedResult = [
         "the-group" : 11
+      ]
+
+      def actualResult = AveragePriceCalculator.getAveragePrices(products, categories, margins)
+
+      assert expectedResult == actualResult;
+    }
+
+    @Test
+    void test__twoProducts__categoryCeilingExclusive() {
+      products = [
+        ["prod-1", "the-group", 20],
+      ];
+
+      categories = [
+        ["cat-1", 10, 20],
+        ["cat-2", 20, 21],
+      ];
+
+      margins["cat-1"] = "10%";
+      margins["cat-2"] = "50%";
+
+      def expectedResult = [
+        "the-group" : 30
       ]
 
       def actualResult = AveragePriceCalculator.getAveragePrices(products, categories, margins)
