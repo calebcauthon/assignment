@@ -1,6 +1,6 @@
 import org.junit.Test
 
-import static groovy.test.GroovyAssert.shouldFail
+import AveragePriceCalculator;
 
 class JUnit4ExampleTests {
     @Test
@@ -21,7 +21,7 @@ class JUnit4ExampleTests {
           "the-group" : 150,
         ]
 
-        def actualResult = getAveragePrices(products, categories, margins)
+        def actualResult = AveragePriceCalculator.getAveragePrices(products, categories, margins)
 
         assert expectedResult == actualResult;
     }
