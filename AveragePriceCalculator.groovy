@@ -55,7 +55,7 @@ class AveragePriceCalculator
   {
       def groupName = product.group;
 
-      def category = _categories.find(c -> product.cost > c.minimumCost && product.cost < c.maximumCost);
+      def category = _categories.find(c -> product.cost >= c.minimumCost && product.cost < c.maximumCost);
       def categoryName = category.name;
 
       def markup = ConvertStringToMarkup(_margins[categoryName]);

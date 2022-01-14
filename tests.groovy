@@ -118,4 +118,25 @@ class JUnit4ExampleTests {
 
       assert expectedResult == actualResult;
     }
+
+    @Test
+    void test__twoProducts__lowerCategoryRangeInclusive() {
+      products = [
+        ["prod-1", "the-group", 10],
+      ];
+
+      categories = [
+        ["cat-1", 10, 20],
+      ];
+
+      margins["cat-1"] = "10%";
+
+      def expectedResult = [
+        "the-group" : 11
+      ]
+
+      def actualResult = AveragePriceCalculator.getAveragePrices(products, categories, margins)
+
+      assert expectedResult == actualResult;
+    }
 }
