@@ -5,10 +5,16 @@ class AveragePriceCalculator
     def product = products[0]
     def name = product[0]
     def group = product[1]
-    def cost = products[2]
+    def cost = product[2]
+
+    def margin = margins["the-category"].replace("%", "");
+    def markup = Float.parseFloat(margin);
+    def price = cost * (1 + markup / 100);
 
     def result = [:]
-    result[group] = 150;
+
+    result[group] = price;
+
     return result;
   }
 }
