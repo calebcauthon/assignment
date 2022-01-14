@@ -33,4 +33,18 @@ class JUnit4ExampleTests {
 
         assert expectedResult == actualResult;
     }
+
+    @Test
+    void test__twoProducts__productGroupAverage() {
+      products.add(
+        ["the-product-2", "the-group", 20]
+      );
+        def expectedResult = [
+          "the-group" : 90, // (150 + 30) / 2
+        ]
+
+        def actualResult = AveragePriceCalculator.getAveragePrices(products, categories, margins)
+
+        assert expectedResult == actualResult;
+    }
 }
