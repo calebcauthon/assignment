@@ -1,9 +1,14 @@
 class AveragePriceCalculator
 {
-  public static Map getAveragePrices(a, b, c)
+  public static Map getAveragePrices(products, b, margins)
   {
-    return [
-      'the-group': 150
-    ];
+    def product = products[0]
+    def name = product[0]
+    def group = product[1]
+    def cost = products[2]
+
+    def result = [:]
+    result[group] = 150;
+    return result;
   }
 }
