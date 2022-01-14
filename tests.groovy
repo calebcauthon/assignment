@@ -19,7 +19,6 @@ class JUnit4ExampleTests {
         ["the-category", 0, 999]
       );
 
-
       margins["the-category"] = "50%";
     }
 
@@ -39,12 +38,37 @@ class JUnit4ExampleTests {
       products.add(
         ["the-product-2", "the-group", 20]
       );
-        def expectedResult = [
-          "the-group" : 90, // (150 + 30) / 2
-        ]
 
-        def actualResult = AveragePriceCalculator.getAveragePrices(products, categories, margins)
+      def expectedResult = [
+        "the-group" : 90, // (150 + 30) / 2
+      ]
 
-        assert expectedResult == actualResult;
+      def actualResult = AveragePriceCalculator.getAveragePrices(products, categories, margins)
+
+      assert expectedResult == actualResult;
+    }
+
+    @Test
+    void test__twoProducts__differentMarkups__productGroupAverage() {
+      products = [
+        ["prod-1", "the-group", 10],
+        ["prod-2", "the-group", 20]
+      ];
+
+      categories = [
+        ["cat-1", 0, 12],
+        ["cat-2", 15, 30]
+      ];
+
+      margins["cat-1"] = "10%";
+      margins["cat-2"] = "50%";
+
+      def expectedResult = [
+        "the-group" : 20.5, // (11 + 30) / 2
+      ]
+
+      def actualResult = AveragePriceCalculator.getAveragePrices(products, categories, margins)
+
+      assert expectedResult == actualResult;
     }
 }
