@@ -58,8 +58,18 @@ class AveragePriceCalculator
       def category = _categories.find(c -> product.cost > c.minimumCost && product.cost < c.maximumCost);
       def categoryName = category.name;
 
-      def margin = _margins[categoryName].replace("%", "");
-      def markup = Float.parseFloat(margin);
+      def markup = ConvertStringToMarkup(_margins[categoryName]);
       return markup;
+  }
+
+  def static float ConvertStringToMarkup(markupText)
+  {
+    if (markupText.contains("%")) {
+      def numberText = markupText.replace("%", "");
+      return Float.parseFloat(numberText);
+    } else {
+      def numberText = markupText;
+      return Float.parseFloat(markupText) * 100;
+    }
   }
 }

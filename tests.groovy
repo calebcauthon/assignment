@@ -94,4 +94,28 @@ class JUnit4ExampleTests {
 
       assert expectedResult == actualResult;
     }
+
+    @Test
+    void test__twoProducts__differentMarkupTypes__productGroupAverage() {
+      products = [
+        ["prod-1", "the-group", 10],
+        ["prod-2", "the-group", 20]
+      ];
+
+      categories = [
+        ["cat-1", 0, 12],
+        ["cat-2", 15, 30]
+      ];
+
+      margins["cat-1"] = "10%";
+      margins["cat-2"] = ".5";
+
+      def expectedResult = [
+        "the-group" : 20.5, // (11 + 30) / 2
+      ]
+
+      def actualResult = AveragePriceCalculator.getAveragePrices(products, categories, margins)
+
+      assert expectedResult == actualResult;
+    }
 }
