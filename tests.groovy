@@ -1,22 +1,30 @@
-import org.junit.Test
+import org.junit.Before;
+import org.junit.Test;
 
 import AveragePriceCalculator;
 
 class JUnit4ExampleTests {
+    private products = []
+    private categories = []
+    private margins = [:]
+
+    @Before
+    void Setup()
+    {
+      products.add(
+        ["the-product", "the-group", 100]
+      );
+
+      categories.add(
+        ["the-category", 0, 999]
+      );
+
+
+      margins["the-category"] = "50%";
+    }
+
     @Test
     void test__productGroupAverage() {
-        def products = [
-          ["the-product", "the-group", 100]
-        ]
-
-        def categories = [
-            ["the-category", 0, 999],
-        ]
-
-        def margins = [
-          "the-category" : "50%"
-        ]
-
         def expectedResult = [
           "the-group" : 150,
         ]
