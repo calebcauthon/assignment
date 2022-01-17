@@ -7,6 +7,26 @@ class AveragePriceCalculator
   private static Category[] _categories = [];
   private static Product[] _products = [];
 
+  public static Map getAveragePrices(products, categories, margins)
+  {
+    
+    _margins = margins;
+    _categories = ConvertCategoryDataToCategoryList(categories);
+    _products = ConvertProductDataToProductList(products);
+
+    def groupNames = _products.collect { p -> p.group }.unique { a, b -> a <=> b };
+
+    def result = groupNames.collectEntries { groupName ->
+      def prices = collectPricesFromGroup(groupName);
+      def totalPrice = prices.inject(0) { sum, price -> sum += price }
+
+      def averagePrice = (totalPrice / prices.size()).round(1);
+
+      [(groupName):averagePrice]
+    }
+    return result;
+  }
+
   private static ConvertCategoryDataToCategoryList(categories)
   {
     return categories.collect { data -> 
@@ -37,25 +57,7 @@ class AveragePriceCalculator
     }
   }
 
-  public static Map getAveragePrices(products, categories, margins)
-  {
-    
-    _margins = margins;
-    _categories = ConvertCategoryDataToCategoryList(categories);
-    _products = ConvertProductDataToProductList(products);
 
-    def groupNames = _products.collect { p -> p.group }.unique { a, b -> a <=> b };
-
-    def result = groupNames.collectEntries { groupName ->
-      def prices = collectPricesFromGroup(groupName);
-      def totalPrice = prices.inject(0) { sum, price -> sum += price }
-
-      def averagePrice = (totalPrice / prices.size()).round(1);
-
-      [(groupName):averagePrice]
-    }
-    return result;
-  }
 
   def private static float[] collectPricesFromGroup(groupName)
   {
