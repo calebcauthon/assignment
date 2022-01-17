@@ -3,20 +3,14 @@ import Category
 
 class AveragePriceCalculator
 {
-  private static _margins = [:];
-  private static Category[] _categories = [];
-  private static Product[] _products = [];
-
-  public static Map getAveragePrices(products, categories, margins)
+  public static Map getAveragePrices(productData, categoriesData, margins)
   {
-    
-    _margins = margins;
-    _categories = ConvertCategoryDataToCategoryList(categories);
-    _products = ConvertProductDataToProductList(products);
-    def groupNames = GetUniqueGroupNames(_products);
+    def categories = ConvertCategoryDataToCategoryList(categoriesData);
+    def products = ConvertProductDataToProductList(productData);
+    def groupNames = GetUniqueGroupNames(products);
 
     def result = groupNames.collectEntries { groupName ->
-      def prices = collectPricesFromGroup(groupName);
+      def prices = collectPricesFromGroup(products, margins, categories, groupName);
       def totalPrice = prices.inject(0) { sum, price -> sum += price }
 
       def averagePrice = (totalPrice / prices.size()).round(1);
@@ -61,12 +55,10 @@ class AveragePriceCalculator
     }
   }
 
-
-
-  def private static float[] collectPricesFromGroup(groupName)
+  def private static float[] collectPricesFromGroup(products, margins, categories, groupName)
   {
-    def prices = _products.findAll(p -> p.group == groupName).collect { product -> 
-      def markup = getMarkup(product);
+    def prices = products.findAll(p -> p.group == groupName).collect { product -> 
+      def markup = getMarkup(product, margins, categories);
 
       def price = product.cost * (1 + markup / 100);
 
@@ -76,16 +68,16 @@ class AveragePriceCalculator
     return prices;
   }
 
-  def static float getMarkup(product)
+  def static float getMarkup(product, margins, categories)
   {
       def groupName = product.group;
 
-      def category = _categories
+      def category = categories
         .findAll(c -> product.cost >= c.minimumCost)
         .find(c -> c.maximumCost == -1 || (product.cost < c.maximumCost));
       def categoryName = category.name;
 
-      def markup = ConvertStringToMarkup(_margins[categoryName]);
+      def markup = ConvertStringToMarkup(margins[categoryName]);
       return markup;
   }
 
