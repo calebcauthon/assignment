@@ -39,15 +39,4 @@ class AveragePriceCalculator
 
     return prices;
   }
-
-  def static float ConvertStringToMarkup(markupText)
-  {
-    if (markupText.contains("%")) {
-      def numberText = markupText.replace("%", "");
-      return Float.parseFloat(numberText);
-    } else {
-      def numberText = markupText;
-      return Float.parseFloat(markupText) * 100;
-    }
-  }
 }
