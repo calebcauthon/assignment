@@ -51,7 +51,7 @@ class AveragePriceCalculator
       }
 
       def totalPrice = prices.inject(0) { sum, price -> sum += price }
-      def averagePrice = totalPrice / prices.size();
+      def averagePrice = (totalPrice / prices.size()).round(1);
 
       [(groupName):averagePrice]
     }

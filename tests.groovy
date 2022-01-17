@@ -183,4 +183,19 @@ class JUnit4ExampleTests {
 
       assert expectedResult == actualResult;
     }
+
+    @Test
+    void test__roundToCents() {
+      products.add(
+        ["the-product-2", "the-group", 20.5]
+      );
+
+      def expectedResult = [
+        "the-group" : 90.4
+      ]
+
+      def actualResult = AveragePriceCalculator.getAveragePrices(products, categories, margins)
+
+      assert expectedResult == actualResult;
+    }
 }
