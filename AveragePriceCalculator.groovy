@@ -5,6 +5,7 @@ class AveragePriceCalculator
 {
   private static _margins = [:];
   private static Category[] _categories = [];
+  private static Product[] _products = [];
 
   private static ConvertCategoryDataToCategoryList(categories)
   {
@@ -24,13 +25,9 @@ class AveragePriceCalculator
     }
   }
 
-  public static Map getAveragePrices(products, categories, margins)
+  private static ConvertProductDataToProductList(products)
   {
-    
-    _margins = margins;
-    _categories = ConvertCategoryDataToCategoryList(categories);
-
-    def _products = products.collect { productData -> 
+    return products.collect { productData -> 
         def product = new Product();
         product.name = productData[0];
         product.group = productData[1];
@@ -38,24 +35,39 @@ class AveragePriceCalculator
 
         return product;
     }
+  }
+
+  public static Map getAveragePrices(products, categories, margins)
+  {
+    
+    _margins = margins;
+    _categories = ConvertCategoryDataToCategoryList(categories);
+    _products = ConvertProductDataToProductList(products);
 
     def groupNames = _products.collect { p -> p.group }.unique { a, b -> a <=> b };
 
     def result = groupNames.collectEntries { groupName ->
-      def prices = _products.findAll(p -> p.group == groupName).collect { product -> 
-        def markup = getMarkup(product);
-
-        def price = product.cost * (1 + markup / 100);
-
-        return price;
-      }
-
+      def prices = collectPricesFromGroup(groupName);
       def totalPrice = prices.inject(0) { sum, price -> sum += price }
+
       def averagePrice = (totalPrice / prices.size()).round(1);
 
       [(groupName):averagePrice]
     }
     return result;
+  }
+
+  def private static float[] collectPricesFromGroup(groupName)
+  {
+    def prices = _products.findAll(p -> p.group == groupName).collect { product -> 
+      def markup = getMarkup(product);
+
+      def price = product.cost * (1 + markup / 100);
+
+      return price;
+    }
+
+    return prices;
   }
 
   def static float getMarkup(product)
