@@ -26,34 +26,16 @@ class AveragePriceCalculator
     return averagePrice;
   }
 
-
-
-
-
   def private static float[] collectPricesFromGroup(pricingModel, groupName)
   {
     def prices = pricingModel.products.findAll(p -> p.group == groupName).collect { product -> 
-      def markup = getMarkup(product, pricingModel);
-
+      def markup = pricingModel.getMarkup(product);
       def price = product.cost * (1 + markup / 100);
 
       return price;
     }
 
     return prices;
-  }
-
-  def static float getMarkup(product, pricingModel)
-  {
-      def groupName = product.group;
-
-      def category = pricingModel.categories
-        .findAll(c -> product.cost >= c.minimumCost)
-        .find(c -> c.maximumCost == -1 || (product.cost < c.maximumCost));
-      def categoryName = category.name;
-
-      def markup = ConvertStringToMarkup(pricingModel.margins[categoryName]);
-      return markup;
   }
 
   def static float ConvertStringToMarkup(markupText)

@@ -11,6 +11,30 @@ class PricingModel
     margins = marginData;
   }
 
+  def float getMarkup(product)
+  {
+      def groupName = product.group;
+
+      def category = categories
+        .findAll(c -> product.cost >= c.minimumCost)
+        .find(c -> c.maximumCost == -1 || (product.cost < c.maximumCost));
+      def categoryName = category.name;
+
+      def markup = ConvertStringToMarkup(margins[categoryName]);
+      return markup;
+  }
+
+  def float ConvertStringToMarkup(markupText)
+  {
+    if (markupText.contains("%")) {
+      def numberText = markupText.replace("%", "");
+      return Float.parseFloat(numberText);
+    } else {
+      def numberText = markupText;
+      return Float.parseFloat(markupText) * 100;
+    }
+  }
+
   def groups()
   {
     products.collect { p -> p.group }.unique { a, b -> a <=> b };
@@ -30,6 +54,7 @@ class PricingModel
       {
         category.maximumCost = -1;
       }
+
       return category;
     }
   }
