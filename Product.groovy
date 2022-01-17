@@ -1,6 +1,6 @@
 class Product
 {
   String name;
-  String group;
+  Group group;
   float cost;
 }

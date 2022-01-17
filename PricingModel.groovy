@@ -35,11 +35,6 @@ class PricingModel
     }
   }
 
-  def groups()
-  {
-    products.collect { p -> p.group }.unique { a, b -> a <=> b };
-  }
-
   private ConvertCategoryDataToCategoryList(categories)
   {
     return categories.collect { data -> 
@@ -64,7 +59,10 @@ class PricingModel
     return products.collect { productData -> 
         def product = new Product();
         product.name = productData[0];
-        product.group = productData[1];
+
+        product.group = new Group();
+        product.group.name = productData[1];
+
         product.cost = productData[2];
 
         return product;

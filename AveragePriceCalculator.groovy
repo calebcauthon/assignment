@@ -1,5 +1,6 @@
 import Product;
 import Category;
+import Group;
 import PricingModel;
 
 class AveragePriceCalculator
@@ -7,18 +8,18 @@ class AveragePriceCalculator
   public static Map getAveragePrices(productData, categoriesData, marginData)
   {
     def pricingModel = new PricingModel(productData, categoriesData, marginData);
-    def groupNames = pricingModel.groups();
+    def groups = pricingModel.products.collect { p -> p.group }.unique { a, b -> a.name <=> b.name };
 
-    def averagePrices = groupNames.collectEntries { groupName ->
-      def averagePrice = CalculateAveragePriceForGroup(groupName, pricingModel)
-      [(groupName):averagePrice]
+    def averagePrices = groups.collectEntries { group ->
+      def averagePrice = CalculateAveragePriceForGroup(group, pricingModel)
+      [(group.name):averagePrice]
     }
     return averagePrices;
   }
 
-  private static CalculateAveragePriceForGroup(groupName, pricingModel)
+  private static CalculateAveragePriceForGroup(group, pricingModel)
   {
-    def prices = collectPricesFromGroup(pricingModel, groupName);
+    def prices = collectPricesFromGroup(pricingModel, group);
     def totalPrice = prices.inject(0) { sum, price -> sum += price }
 
     def averagePrice = (totalPrice / prices.size()).round(1);
@@ -26,9 +27,9 @@ class AveragePriceCalculator
     return averagePrice;
   }
 
-  def private static float[] collectPricesFromGroup(pricingModel, groupName)
+  def private static float[] collectPricesFromGroup(pricingModel, group)
   {
-    def prices = pricingModel.products.findAll(p -> p.group == groupName).collect { product -> 
+    def prices = pricingModel.products.findAll(p -> p.group.name == group.name).collect { product -> 
       def markup = pricingModel.getMarkup(product);
       def price = product.cost * (1 + markup / 100);
 
