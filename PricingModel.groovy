@@ -11,6 +11,11 @@ class PricingModel
     margins = marginData;
   }
 
+  def groups()
+  {
+    products.collect { p -> p.group }.unique { a, b -> a <=> b };
+  }
+
   private ConvertCategoryDataToCategoryList(categories)
   {
     return categories.collect { data -> 

@@ -7,7 +7,7 @@ class AveragePriceCalculator
   public static Map getAveragePrices(productData, categoriesData, marginData)
   {
     def pricingModel = new PricingModel(productData, categoriesData, marginData);
-    def groupNames = GetUniqueGroupNames(pricingModel.products);
+    def groupNames = pricingModel.groups();
 
     def averagePrices = groupNames.collectEntries { groupName ->
       def averagePrice = CalculateAveragePriceForGroup(groupName, pricingModel)
@@ -26,10 +26,7 @@ class AveragePriceCalculator
     return averagePrice;
   }
 
-  private static GetUniqueGroupNames(products)
-  {
-    products.collect { p -> p.group }.unique { a, b -> a <=> b };
-  }
+
 
 
 
