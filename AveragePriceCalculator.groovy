@@ -13,8 +13,7 @@ class AveragePriceCalculator
     _margins = margins;
     _categories = ConvertCategoryDataToCategoryList(categories);
     _products = ConvertProductDataToProductList(products);
-
-    def groupNames = _products.collect { p -> p.group }.unique { a, b -> a <=> b };
+    def groupNames = GetUniqueGroupNames(_products);
 
     def result = groupNames.collectEntries { groupName ->
       def prices = collectPricesFromGroup(groupName);
@@ -25,6 +24,11 @@ class AveragePriceCalculator
       [(groupName):averagePrice]
     }
     return result;
+  }
+
+  private static GetUniqueGroupNames(products)
+  {
+    products.collect { p -> p.group }.unique { a, b -> a <=> b };
   }
 
   private static ConvertCategoryDataToCategoryList(categories)
