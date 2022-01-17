@@ -1,24 +1,24 @@
-import Product
-import Category
+import Product;
+import Category;
+import PricingModel;
 
 class AveragePriceCalculator
 {
-  public static Map getAveragePrices(productData, categoriesData, margins)
+  public static Map getAveragePrices(productData, categoriesData, marginData)
   {
-    def categories = ConvertCategoryDataToCategoryList(categoriesData);
-    def products = ConvertProductDataToProductList(productData);
-    def groupNames = GetUniqueGroupNames(products);
+    def pricingModel = new PricingModel(productData, categoriesData, marginData);
+    def groupNames = GetUniqueGroupNames(pricingModel.products);
 
     def averagePrices = groupNames.collectEntries { groupName ->
-      def averagePrice = CalculateAveragePriceForGroup(groupName, products, margins, categories)
+      def averagePrice = CalculateAveragePriceForGroup(groupName, pricingModel)
       [(groupName):averagePrice]
     }
     return averagePrices;
   }
 
-  private static CalculateAveragePriceForGroup(groupName, products, margins, categories)
+  private static CalculateAveragePriceForGroup(groupName, pricingModel)
   {
-    def prices = collectPricesFromGroup(products, margins, categories, groupName);
+    def prices = collectPricesFromGroup(pricingModel, groupName);
     def totalPrice = prices.inject(0) { sum, price -> sum += price }
 
     def averagePrice = (totalPrice / prices.size()).round(1);
@@ -31,40 +31,12 @@ class AveragePriceCalculator
     products.collect { p -> p.group }.unique { a, b -> a <=> b };
   }
 
-  private static ConvertCategoryDataToCategoryList(categories)
-  {
-    return categories.collect { data -> 
-      def category = new Category();
-      category.name = data[0];
-      category.minimumCost = data[1];
-      if (data[2] != null)
-      {
-        category.maximumCost = data[2];
-      }
-      else
-      {
-        category.maximumCost = -1;
-      }
-      return category;
-    }
-  }
 
-  private static ConvertProductDataToProductList(products)
-  {
-    return products.collect { productData -> 
-        def product = new Product();
-        product.name = productData[0];
-        product.group = productData[1];
-        product.cost = productData[2];
 
-        return product;
-    }
-  }
-
-  def private static float[] collectPricesFromGroup(products, margins, categories, groupName)
+  def private static float[] collectPricesFromGroup(pricingModel, groupName)
   {
-    def prices = products.findAll(p -> p.group == groupName).collect { product -> 
-      def markup = getMarkup(product, margins, categories);
+    def prices = pricingModel.products.findAll(p -> p.group == groupName).collect { product -> 
+      def markup = getMarkup(product, pricingModel);
 
       def price = product.cost * (1 + markup / 100);
 
@@ -74,16 +46,16 @@ class AveragePriceCalculator
     return prices;
   }
 
-  def static float getMarkup(product, margins, categories)
+  def static float getMarkup(product, pricingModel)
   {
       def groupName = product.group;
 
-      def category = categories
+      def category = pricingModel.categories
         .findAll(c -> product.cost >= c.minimumCost)
         .find(c -> c.maximumCost == -1 || (product.cost < c.maximumCost));
       def categoryName = category.name;
 
-      def markup = ConvertStringToMarkup(margins[categoryName]);
+      def markup = ConvertStringToMarkup(pricingModel.margins[categoryName]);
       return markup;
   }
 
