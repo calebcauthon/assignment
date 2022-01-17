@@ -162,4 +162,25 @@ class JUnit4ExampleTests {
 
       assert expectedResult == actualResult;
     }
+
+    @Test
+    void test__NullCeiling__TreatedAsInfinity() {
+      products = [
+        ["prod-1", "the-group", 20],
+      ];
+
+      categories = [
+        ["cat-1", 10, null],
+      ];
+
+      margins["cat-1"] = "10%";
+
+      def expectedResult = [
+        "the-group" : 22
+      ]
+
+      def actualResult = AveragePriceCalculator.getAveragePrices(products, categories, margins)
+
+      assert expectedResult == actualResult;
+    }
 }

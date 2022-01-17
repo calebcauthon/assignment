@@ -12,7 +12,14 @@ class AveragePriceCalculator
       def category = new Category();
       category.name = data[0];
       category.minimumCost = data[1];
-      category.maximumCost = data[2];
+      if (data[2] != null)
+      {
+        category.maximumCost = data[2];
+      }
+      else
+      {
+        category.maximumCost = -1;
+      }
       return category;
     }
   }
@@ -55,7 +62,9 @@ class AveragePriceCalculator
   {
       def groupName = product.group;
 
-      def category = _categories.find(c -> product.cost >= c.minimumCost && product.cost < c.maximumCost);
+      def category = _categories
+        .findAll(c -> product.cost >= c.minimumCost)
+        .find(c -> c.maximumCost == -1 || (product.cost < c.maximumCost));
       def categoryName = category.name;
 
       def markup = ConvertStringToMarkup(_margins[categoryName]);
