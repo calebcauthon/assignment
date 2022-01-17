@@ -29,7 +29,8 @@ class AveragePriceCalculator
 
   def private static float[] collectPricesFromGroup(pricingModel, group)
   {
-    def prices = pricingModel.products.findAll(p -> p.group.name == group.name).collect { product -> 
+    def productsInGroup = pricingModel.products.findAll(p -> p.group.name == group.name);
+    def prices = productsInGroup.collect { product -> 
       def markup = pricingModel.getMarkup(product);
       def price = product.cost * (1 + markup / 100);
 
