@@ -9,15 +9,21 @@ class AveragePriceCalculator
     def products = ConvertProductDataToProductList(productData);
     def groupNames = GetUniqueGroupNames(products);
 
-    def result = groupNames.collectEntries { groupName ->
-      def prices = collectPricesFromGroup(products, margins, categories, groupName);
-      def totalPrice = prices.inject(0) { sum, price -> sum += price }
-
-      def averagePrice = (totalPrice / prices.size()).round(1);
-
+    def averagePrices = groupNames.collectEntries { groupName ->
+      def averagePrice = CalculateAveragePriceForGroup(groupName, products, margins, categories)
       [(groupName):averagePrice]
     }
-    return result;
+    return averagePrices;
+  }
+
+  private static CalculateAveragePriceForGroup(groupName, products, margins, categories)
+  {
+    def prices = collectPricesFromGroup(products, margins, categories, groupName);
+    def totalPrice = prices.inject(0) { sum, price -> sum += price }
+
+    def averagePrice = (totalPrice / prices.size()).round(1);
+
+    return averagePrice;
   }
 
   private static GetUniqueGroupNames(products)
