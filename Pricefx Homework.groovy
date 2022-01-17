@@ -18,6 +18,8 @@
 // - make the category look-up performance effective
  
 // contains information about [Product, Group, Cost]
+import AveragePriceCalculator;
+
 def products = [
     ["A", "G1", 20.1],
     ["B", "G2", 98.4],
@@ -58,7 +60,7 @@ def margins = [
 //
 // ---------------------------
  
-def result = null
+def result = AveragePriceCalculator.getAveragePrices(products, category, margins);
  
 // ---------------------------
 //
